@@ -93,12 +93,81 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+h1 {
+	font-weight: normal;
+	margin: 0;
+	
+}
+
+p {
+	font-size: 0.80em;
+}
+
+#primary_nav {
+	position: fixed;
+	left: 30px;
+	top: 120px;
+	z-index: 10;
+}
+
+#primary_menu {
+	width: 130px;
+	padding: 0;
+	background: #fff;
+	border: 1px solid #000;
+}
+
+#primary_menu ul {
+	padding-left: 0;
+}
+
+#primary_menu ul li a {
+	padding-left: 10px;
+}
+
+#primary_menu a {
+	text-decoration: none;
+	color: #000;
+	font-size: 0.80em;	
+	display: block;
+	padding: 5px;
+}
+
+#primary_menu a.on {
+	background: #15AAFF !important;
+	color: #fff;	
+}
+
+#primary_menu a:hover {
+	background: #EEEEEE;
+}
 
 
+.article {
+	position: relative;
+	/*height: 820px;*/
+	padding-bottom: 100px;
+}
+
+.article-content {
+	margin: 0 auto;
+	width: 920px;
+	padding: 20px;
+}
+
+.light-bg {
+	background: #E2E4E6;	
+}
+
+.dark-bg {
+	background: #0C8DCD;
+	color: #fff;
+}
 
 
-
-
+.js .article {
+	
+}
 
 
 
