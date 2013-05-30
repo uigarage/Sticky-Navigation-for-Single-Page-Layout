@@ -1,13 +1,14 @@
-(function(window, document, undefined){
+(function(window, document, undefined) {
 	'use strict';
 	
 	var log	= function(o) {
+		
 		if(window.console)
 			console.log(o);
+		
 	};
 	
 	var stickym	= window.stickym = {
-	
 		init:	function(options) {
 			return new Stickym(options);
 		},
@@ -23,7 +24,8 @@
 		documentElement,
 		htmlbody,
 		_instance,
-		elm			= {}
+		elm			= {},
+		speed		= 800
 		;
 	
 	function Stickym(options) {
@@ -34,10 +36,10 @@
 			$w	= $(win)	// window
 		;
 		
-		elm.menu				= $('#primary_menu').find('a');				
-		elm.articles			= {};
-		elm.articles.wrap		= $('#article-wrapper');
-		elm.articles.items		= $('.article');
+		elm.menu		= $('#primary_menu').find('a');				
+		elm.art			= {};
+		elm.art.wrap	= $('#article-wrapper');
+		elm.art.items	= $('.article');
 		
 		htmlbody	= $('html, body');
 		
@@ -51,12 +53,15 @@
 	}
 	
 	Stickym.prototype.init	= function() {
-		if( win.location.hash === '' || win.pageYOffset === 0 ) {
+		
+		if( win.location.hash === '' || $(window).scrollTop() === 0 ) {
 			elm.menu
 				.eq(0)
-				.trigger('click')				
-				.addClass('on');
-		}		
+				.trigger('click')			
+				.addClass('on')
+				.css({ opacity: 1.0 })	//	IE < 8 hack (not tested in IE 9)
+			;
+		}
 	};
 	
 	//	scroll page based on menu call to action	
@@ -69,32 +74,49 @@
 		id	= $mi.attr('href');
 		//id	= id.substring(1);	// eliminate #
 		
-		top	= parseInt( elm.articles.wrap.find( id ).position().top );
-		htmlbody.animate( {scrollTop: top}, 800 );
-		win.location.hash	= id;
+		top	= parseInt( elm.art.wrap.find( id ).position().top );
+		htmlbody.animate( {scrollTop: top}, speed, function() {
+			win.location.hash	= id;
+		});        		
 	};
 
 	Stickym.prototype.skroll	= function(e) {
 		var
 			w	= $(this),
 			wH	= w.height(),
-			scrollTop	= win.pageYOffset
+			scrollTop	= w.scrollTop()
 		;
 
-		elm.articles.items.each( function( inx ){
-			var 
-				article	= $(this),
-				aOffsetTop = scrollTop - parseInt(article.position().top)
-			;			
-			
-			if( aOffsetTop >= -80 && aOffsetTop <= 0 ) {
+		elm.art.items.each( function( inx ) {
+			var
+				art		= $(this),	//	article
+				artId	= art.attr('id'),
+				artPosTop	= parseInt(art.position().top),
+				aOffsetTop	= scrollTop - artPosTop,	// Not neccessary
+				opacity
+			;
+
+			if( (scrollTop + (wH/2)) > artPosTop  ) {
 				elm.menu
 					.removeClass('on')
-					.filter('[href=#' + article.attr('id')+']')
+					.filter('[href=#' + art.attr('id')+']')
 					.addClass('on');
 			}
+
+			//	scrollTop > artpostop && artPosTop + artHeight < scrollTop
+			if( (scrollTop + wH) > artPosTop && aOffsetTop <= (art.height()/2) ) {
+				
+				opacity	= parseFloat( ( (scrollTop)/artPosTop ), 1 ).toFixed(2);        				
+				if( opacity === 'Infinity' || opacity === 'NaN' ) {
+					opacity = 1.0;
+				}
+
+				art.css( {
+					opacity: opacity
+				});
+			}
 		});
-	};	
+	};        	
 })(window,document);
 
 var s	= stickym.init({});
